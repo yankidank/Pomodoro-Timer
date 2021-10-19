@@ -46,8 +46,8 @@ main {
     scroll-padding-inline: 0;
     scroll-snap-points-x: repeat(1em);
 }
-#timeline-wrapper::webkit-toolbar{
-    display:none;
+#timeline-wrapper::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
 }
 #timeline-positive{
     width:100rem;
