@@ -38,7 +38,6 @@ main {
 #timeline-wrapper{
     width: 100%;
     overflow-x: scroll;
-    scroll-behavior: smooth;
     scrollbar-width:none;
     -ms-overflow-style:none;
     -webkit-overflow-scrolling: touch;
@@ -50,10 +49,10 @@ main {
     display: none; /* Chrome, Safari, and Opera */
 }
 #timeline-positive{
-    width:100rem;
+    width:120rem;
 }
 #timeline-negative{
-    width:100rem;
+    width:120rem;
 }
 .timeline {
     display: flex;
@@ -111,12 +110,10 @@ main {
     flex-wrap: nowrap;
 }
 #progress-bar-negative-bg{
-    width:99.54rem;
     background-color:#97b18a;
     justify-content: flex-end;
 }
 #progress-bar-positive-bg {
-    width:99.54rem;
     background-color:#a55252;
 }
 #progress-positive{
@@ -147,7 +144,7 @@ main {
     transition: all .15s ease-in-out;
     text-transform: uppercase;
     font-size:1.4rem;
-    font-weight:600;
+    font-weight:500;
     width: 280px;
     height:72px;
     background: #FFFFFF;

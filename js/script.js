@@ -8,6 +8,7 @@ var progressNegativeEle = document.getElementById("progress-negative");
 var buttonStartEle = document.getElementById("start");
 var buttonStopEle = document.getElementById("stop");
 var buttonResetEle = document.getElementById("reset");
+var timelineLength = 120;
 var setTimePositive = 25;
 var setTimeNegative = 5;
 var displayMinutes = setTimePositive;
@@ -146,11 +147,11 @@ function markerHTML(i, positive){
     `};
 }
 var markerDataPos = '';
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < timelineLength; i++) {
     markerDataPos = markerDataPos + markerHTML(i, true);
 }
 var markerDataNeg = '';
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < timelineLength; i++) {
     markerDataNeg = markerDataNeg + markerHTML(i, false);
 }
 
@@ -195,7 +196,7 @@ function backgroundPhase() {
 }
 
 if('IntersectionObserver' in window){
-    var observer = new IntersectionObserver((changes, observer) => {
+    var observer = new IntersectionObserver((changes) => {
         changes.forEach(entry => {
             if (!ioPaused){
                 setMarker = entry.target.dataset.marker;
@@ -245,6 +246,10 @@ timelineWrapperEle.addEventListener('mousemove', (e) => {
     if(!isDown) return;
     e.preventDefault();
     var x = e.pageX - timelineWrapperEle.offsetLeft;
-    var walk = (x - startX) * 2; //scroll-fast
+    var walk = (x - startX) * 1.5; //scroll-fast
     timelineWrapperEle.scrollLeft = scrollLeft - walk;
 });
+
+var timelineLengthAdjusted = timelineLength - 0.46;
+document.getElementById("progress-bar-positive-bg").style.width = timelineLengthAdjusted+"rem";
+document.getElementById("progress-bar-negative-bg").style.width = timelineLengthAdjusted+"rem";
