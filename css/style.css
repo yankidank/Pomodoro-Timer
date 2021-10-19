@@ -34,6 +34,42 @@ main {
     color:rgba(172, 211, 152, 1);
 }
 /* Timeline */
+
+#timeline-wrapper{
+    width: 100%;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0;
+    scroll-snap-points-x: repeat(1em);
+}
+#timeline-wrapper::webkit-toolbar{
+    display:none;
+}
+#timeline-positive{
+    width:100rem;
+}
+#timeline-negative{
+    width:100rem;
+}
+.timeline {
+    display: flex;
+}
+#measure-wrapper .timeline .marker-wrapper .marker-value {
+    scroll-snap-align: center;
+}
+.marker-value {
+    scroll-snap-stop: normal;
+}
+#measure-wrapper{
+    width: 100%;
+    height:2em;
+    display: flex;
+    scroll-snap-align: start;
+}
 .marker-wrapper {  
     display:flex;
 }
@@ -63,9 +99,6 @@ main {
     width:7px;
     margin-bottom:15px;
 }
-.timeline-measure {
-    display:flex;
-}
 #progress-wrapper {
     width:fit-content;
     height:1em;
@@ -77,27 +110,14 @@ main {
     display:flex;
     flex-wrap: nowrap;
 }
-.progress-bar-negative-bg{
+#progress-bar-negative-bg{
     width:99.54rem;
     background-color:#97b18a;
     justify-content: flex-end;
 }
-.progress-bar-positive-bg {
+#progress-bar-positive-bg {
     width:99.54rem;
     background-color:#a55252;
-}
-
-#timeline-wrapper{
-    width: 100%;
-    overflow-x: scroll;
-}
-#measure-wrapper{
-    width: 100%;
-    height:2em;
-    display: flex;
-}
-.timeline {
-    display: flex;
 }
 #progress-positive{
     background-color:rgb(227 219 219);
@@ -107,12 +127,7 @@ main {
     flex-direction: row-reverse;
     justify-content: flex-end;
 }
-#timeline-positive{
-    width:100rem;
-}
-#timeline-negative{
-    width:100rem;
-}
+/* Current Marker */
 #current-marker svg {
     -webkit-filter: drop-shadow( 0px 0px 6px rgba(0, 0, 0, .65));
     filter: drop-shadow( 0px 0px 6px rgba(0, 0, 0, .65));
@@ -135,15 +150,18 @@ main {
     width: 280px;
     height:72px;
     background: #FFFFFF;
-    box-shadow: 0px 1px 7px rgb(0 0 0 / 55%);
+    box-shadow: 0px 0px 7px rgb(0 0 0 / 50%);
     border-radius: 14px;
     border:0;
 }
 .btn:active {
     transform: scale(0.99);
-    background: rgb(223, 223, 223);
+    background-color: rgba(225, 225, 225, 0.75);
     color:rgb(255, 255, 255);
-    box-shadow: 0px 2px 2px rgb(0 0 0 / 55%);
+    -webkit-transition: background-color 200ms linear;
+    -ms-transition: background-color 200ms linear;
+    transition: background-color 200ms linear;
+    box-shadow: 0px 0px 2px rgb(0 0 0 / 60%);
 }
 .btn.positive {
     color:green;
