@@ -1,5 +1,6 @@
 var containerEle = document.getElementById("container");
 var timeEle = document.getElementById("time");
+var timelineWrapperEle = document.getElementById("timeline-wrapper");
 var timelinePositiveEle = document.getElementById("timeline-positive");
 var timelineNegativeEle = document.getElementById("timeline-negative");
 var progressPositiveEle = document.getElementById("progress-positive");
@@ -24,7 +25,8 @@ var int;
 
 backgroundPhase()
 
-buttonStartEle.onclick = function() {
+buttonStartEle.onclick = function(e) {
+    e.preventDefault();
     if (!timerPause){
         timerPause = true;
         return;
@@ -64,14 +66,6 @@ function switchPhase() {
     ioPaused = false;
 }
 
-function trackTimeline(min){
-    var currentPhase = timerPositive ? 'pos' : 'neg';
-    var minuteString = min ? timeString(min) : timeString(displayMinutes);
-    ioPaused = true;
-    document.getElementById("marker-id-"+currentPhase+"-"+ minuteString).scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
-    ioPaused = false;
-}
-
 // Run timer countdown
 function startTimer() {
     clearInterval(int);
@@ -83,12 +77,7 @@ function startTimer() {
     
     function timer() { // 1 second loop
         if (displayMinutes === 0 && displaySeconds === 0){ switchPhase(); return }
-        // if (displaySeconds === 59){
-        //     if (!ioPaused){
-        //         ioPaused = true
-        //     }
-        //     trackTimeline()
-        // }
+        trackTimeline();
         dateNow = Date.now();
         var totalSecsPositive = parseInt(setTimePositive * 60);
         var totalSecsNegative = parseInt(setTimeNegative * 60);
@@ -115,7 +104,8 @@ function startTimer() {
             //progressNegativeEle.style.width = percentLeft + "%";
         }
 
-        buttonStopEle.onclick = function() {
+        buttonStopEle.onclick = function(e) {
+            e.preventDefault();
             clearInterval(int);
             timerPause = true;
             if (displayMinutes === 0 && displaySeconds === 0){ return } // already at 00:00
@@ -186,6 +176,17 @@ function setNewTime(m, s) {
     displayMinutes = parseInt(m);
     displaySeconds = parseInt(s);
     timeEle.innerHTML = `${timeString(displayMinutes)}<span class="seconds secs-${timerPositive? 'pos': 'neg'}">:${timeString(displaySeconds)}</span>`;
+    if (timerPositive){
+        progressNegativeEle.style.display = 'none';
+        progressPositiveEle.style.display = 'inline-block';
+        progressPositiveEle.style.width = displayMinutes + (displaySeconds / 60) + "rem";
+        //progressPositiveEle.style.width = percentLeft + "%";
+    } else {
+        progressPositiveEle.style.display = 'none';
+        progressNegativeEle.style.display = 'inline-block';
+        progressNegativeEle.style.width = displayMinutes + (displaySeconds / 60) + "rem";
+        //progressNegativeEle.style.width = percentLeft + "%";
+    }
 }
 
 function backgroundPhase() {
@@ -223,28 +224,27 @@ if('IntersectionObserver' in window){
     dataMarkers.forEach(marker => observer.observe(marker));
 }
 
-const slider = document.querySelector('#timeline-wrapper');
-let isDown = false;
-let startX;
-let scrollLeft;
-slider.addEventListener('mousedown', (e) => {
+var isDown = false;
+var startX;
+var scrollLeft;
+timelineWrapperEle.addEventListener('mousedown', (e) => {
     isDown = true;
-    slider.classList.add('active');
-    startX = e.pageX - slider.offsetLeft;
-    scrollLeft = slider.scrollLeft;
+    timelineWrapperEle.classList.add('active');
+    startX = e.pageX - timelineWrapperEle.offsetLeft;
+    scrollLeft = timelineWrapperEle.scrollLeft;
 });
-slider.addEventListener('mouseleave', () => {
+timelineWrapperEle.addEventListener('mouseleave', () => {
     isDown = false;
-    slider.classList.remove('active');
+    timelineWrapperEle.classList.remove('active');
 });
-slider.addEventListener('mouseup', () => {
+timelineWrapperEle.addEventListener('mouseup', () => {
     isDown = false;
-    slider.classList.remove('active');
+    timelineWrapperEle.classList.remove('active');
 });
-slider.addEventListener('mousemove', (e) => {
+timelineWrapperEle.addEventListener('mousemove', (e) => {
     if(!isDown) return;
     e.preventDefault();
-    const x = e.pageX - slider.offsetLeft;
-    const walk = (x - startX) * 3; //scroll-fast
-    slider.scrollLeft = scrollLeft - walk;
+    var x = e.pageX - timelineWrapperEle.offsetLeft;
+    var walk = (x - startX) * 2; //scroll-fast
+    timelineWrapperEle.scrollLeft = scrollLeft - walk;
 });
