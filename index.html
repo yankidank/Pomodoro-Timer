@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro Timer</title>
+    <link rel="stylesheet" href="./css/normalize.css" media="all">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css" media="all">
+</head>
+<body>
+    <div id="container">
+        <main id="main-wrapper">
+            <div id="timer-wrapper">
+                <h1>
+                    <time role="timer" datetime="00:00" id="time"></time>
+                </h1>
+            </div>
+            <div id="timeline-wrapper">
+                <div id="measure-wrapper">
+                    <div class="timeline" id="timeline-negative">
+                        <div class="marker-wrapper" id="marker-wrapper-negative"></div>
+                    </div>
+                    <div class="timeline" id="timeline-positive">
+                        <div class="marker-wrapper" id="marker-wrapper-positive"></div>
+                    </div>
+                </div>
+                <div id="progress-wrapper">
+                    <div class="progress-bar progress-bar-negative-bg" role="meter" data-negative-set="5" aria-valuenow="5" aria-valuetext="5:00" aria-valuemin="1" aria-valuemax="99" aria-labelledby="timer">
+                        <div id="progress-negative" role="progressbar" data-negative-position="5" aria-valuenow="5" aria-valuemin="1" aria-valuemax="99"></div>
+                    </div>
+                    <div class="progress-bar progress-bar-positive-bg" role="meter" data-positive-set="25" aria-valuenow="25" aria-valuetext="25:00" aria-valuemin="1" aria-valuemax="99"  aria-labelledby="timer">
+                        <div id="progress-positive" role="progressbar" data-positive-position="25" aria-valuenow="25" aria-valuemin="1" aria-valuemax="99"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="shadow-wrapper" class="center">
+                <div id="current-marker">
+                    <svg width="42" height="42" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.0234 12.7574L6.43387 27.145C4.94812 28.8434 6.15562 31.4999 8.4105 31.4999H33.5895C34.0941 31.5003 34.5882 31.3553 35.0125 31.0821C35.4369 30.809 35.7735 30.4193 35.9821 29.9598C36.1906 29.5003 36.2623 28.9904 36.1886 28.4912C36.1148 27.9919 35.8987 27.5246 35.5661 27.145L22.9766 12.76C22.7302 12.4781 22.4264 12.2521 22.0855 12.0972C21.7445 11.9424 21.3744 11.8623 21 11.8623C20.6256 11.8623 20.2555 11.9424 19.9145 12.0972C19.5736 12.2521 19.2698 12.4781 19.0234 12.76V12.7574Z" fill="white"/>
+                    </svg>
+                </div>
+            </div>
+            <div id="footer-wrapper" class="center">
+                <div><button class="btn btn-positive" id="start">Start</button></div>
+                <div><button class="btn btn-positive" style="display:none;" id="stop">Stop</button></div>
+            </div>
+        </main>
+    </div>
+</body>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+<script type="text/javascript" src="./js/script.js"></script>
+</html>
