@@ -24,18 +24,6 @@ var dateStart;
 var dateNow;
 var int;
 
-backgroundPhase()
-
-buttonStartEle.onclick = function(e) {
-    e.preventDefault();
-    if (!timerPause){
-        timerPause = true;
-        return;
-    }
-    buttonStartEle.style.display = 'none';
-    buttonStopEle.style.display = 'inline-block';
-    startTimer();
-};
 
 function timeString(n){
     var newString = n < 10 ? n = `0${n}` : n = `${n}`;
@@ -43,6 +31,55 @@ function timeString(n){
     newString = String(newString);
     return newString;
 }
+
+function setNewTime(m, s) {
+    clearInterval(int);
+    timerPause = true;
+    if (setMarker !== lastMarker){
+        if (displaySeconds !== 0){
+            timerPositive ? setTimePositive = setMarker : setTimeNegative = setMarker;
+        }
+    }
+    displayMinutes = parseInt(m);
+    displaySeconds = parseInt(s);
+    timeEle.innerHTML = `${timeString(displayMinutes)}<span class="seconds secs-${timerPositive? 'pos': 'neg'}">:${timeString(displaySeconds)}</span>`;
+    if (timerPositive){
+        progressNegativeEle.style.display = 'none';
+        progressPositiveEle.style.display = 'inline-block';
+        progressPositiveEle.style.width = displayMinutes + (displaySeconds / 60) + "rem";
+        //progressPositiveEle.style.width = percentLeft + "%";
+    } else {
+        progressPositiveEle.style.display = 'none';
+        progressNegativeEle.style.display = 'inline-block';
+        progressNegativeEle.style.width = displayMinutes + (displaySeconds / 60) + "rem";
+        //progressNegativeEle.style.width = percentLeft + "%";
+    }
+}
+
+function trackTimeline(){
+    var progressBox = document.getElementById("progress-bar-positive-bg").getBoundingClientRect();
+    var mainWrapper = document.getElementById("main-wrapper").getBoundingClientRect();
+    var timelineBox = timelineWrapperEle.getBoundingClientRect();
+    var intElemOffsetWidth = progressPositiveEle.offsetWidth;
+    console.log(progressBox)
+    console.log(mainWrapper)
+    console.log(timelineBox)
+    console.log(intElemOffsetWidth)
+    // if (progressBox.width > 0){
+    //     ioPaused = true;
+    //     timelineWrapperEle.scroll({
+    //         top: 0,
+    //         right: intElemOffsetWidth,
+    //         behavior: 'smooth'
+    //     });
+    //     ioPaused = false;
+    // }
+}
+
+function timerEnded() {
+    console.log('Timer reached 00:00!');
+}
+
 function switchPhase() {
     clearInterval(int);
     timerPositive = !timerPositive;
@@ -67,6 +104,43 @@ function switchPhase() {
     ioPaused = false;
 }
 
+function backgroundPhase() {
+    timerPositive ? containerEle.classList.add("bg-positive") : containerEle.classList.add("bg-negative");
+    timerPositive ? containerEle.classList.remove("bg-negative") : containerEle.classList.remove("bg-positive");
+}
+
+// Generate timeline markers
+function markerHTML(i, positive){
+    var value = positive ? 'pos' : 'neg';
+    if(i === 0 && !positive){
+        return ''
+    } else if(i % 5  === 0 ){
+        if(i < 10){ i = '0' + i }
+        return `
+            <div class="marker-value">
+                <div class="marker-label" id="marker-id-${value}-${i}" data-label="${i}">${i}</div>
+                <div class="marker-tall data-marker" data-phase="${value}" data-marker="${i}" ></div>
+            </div>
+    `} else {
+        if(i < 10){ i = '0' + i }
+        return `
+            <div class="marker-value">
+                <div class="marker-label" id="marker-id-${value}-${i}" data-label="${i}"></div>
+                <div class="marker-short data-marker" data-phase="${value}" data-marker="${i}"></div>
+            </div>
+    `};
+}
+var markerDataPos = '';
+for (let i = 0; i < timelineLength; i++) {
+    markerDataPos = markerDataPos + markerHTML(i, true);
+}
+var markerDataNeg = '';
+for (let i = 0; i < timelineLength; i++) {
+    markerDataNeg = markerDataNeg + markerHTML(i, false);
+}
+document.getElementById('marker-wrapper-positive').innerHTML = markerDataPos; // Render markers
+document.getElementById('marker-wrapper-negative').innerHTML = markerDataNeg;
+
 // Run timer countdown
 function startTimer() {
     clearInterval(int);
@@ -77,7 +151,7 @@ function startTimer() {
         mins;
     
     function timer() { // 1 second loop
-        if (displayMinutes === 0 && displaySeconds === 0){ switchPhase(); return }
+        if (displayMinutes === 0 && displaySeconds === 0){ timerEnded(); switchPhase(); return }
         trackTimeline();
         dateNow = Date.now();
         var totalSecsPositive = parseInt(setTimePositive * 60);
@@ -125,38 +199,16 @@ function startTimer() {
     }
 }
 
-// Generate timeline markers
-function markerHTML(i, positive){
-    var value = positive ? 'pos' : 'neg';
-    if(i === 0 && !positive){
-        return ''
-    } else if(i % 5  === 0 ){
-        if(i < 10){ i = '0' + i }
-        return `
-            <div class="marker-value">
-                <div class="marker-label" id="marker-id-${value}-${i}" data-label="${i}">${i}</div>
-                <div class="marker-tall data-marker" data-phase="${value}" data-marker="${i}" ></div>
-            </div>
-    `} else {
-        if(i < 10){ i = '0' + i }
-        return `
-            <div class="marker-value">
-                <div class="marker-label" id="marker-id-${value}-${i}" data-label="${i}"></div>
-                <div class="marker-short data-marker" data-phase="${value}" data-marker="${i}"></div>
-            </div>
-    `};
-}
-var markerDataPos = '';
-for (let i = 0; i < timelineLength; i++) {
-    markerDataPos = markerDataPos + markerHTML(i, true);
-}
-var markerDataNeg = '';
-for (let i = 0; i < timelineLength; i++) {
-    markerDataNeg = markerDataNeg + markerHTML(i, false);
-}
-
-document.getElementById('marker-wrapper-positive').innerHTML = markerDataPos; // Render markers
-document.getElementById('marker-wrapper-negative').innerHTML = markerDataNeg;
+buttonStartEle.onclick = function(e) {
+    e.preventDefault();
+    if (!timerPause){
+        timerPause = true;
+        return;
+    }
+    buttonStartEle.style.display = 'none';
+    buttonStopEle.style.display = 'inline-block';
+    startTimer();
+};
 
 window.onload = (event) => {
     var currentPhase = timerPositive ? 'pos' : 'neg';
@@ -165,35 +217,6 @@ window.onload = (event) => {
     timeEle.innerHTML = `${minuteString}<span class="seconds secs-${timerPositive}">:${secondString}</span>`;
     document.getElementById("marker-id-"+currentPhase+"-"+ minuteString).scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
 };
-
-function setNewTime(m, s) {
-    clearInterval(int);
-    timerPause = true;
-    if (setMarker !== lastMarker){
-        if (displaySeconds !== 0){
-            timerPositive ? setTimePositive = setMarker : setTimeNegative = setMarker;
-        }
-    }
-    displayMinutes = parseInt(m);
-    displaySeconds = parseInt(s);
-    timeEle.innerHTML = `${timeString(displayMinutes)}<span class="seconds secs-${timerPositive? 'pos': 'neg'}">:${timeString(displaySeconds)}</span>`;
-    if (timerPositive){
-        progressNegativeEle.style.display = 'none';
-        progressPositiveEle.style.display = 'inline-block';
-        progressPositiveEle.style.width = displayMinutes + (displaySeconds / 60) + "rem";
-        //progressPositiveEle.style.width = percentLeft + "%";
-    } else {
-        progressPositiveEle.style.display = 'none';
-        progressNegativeEle.style.display = 'inline-block';
-        progressNegativeEle.style.width = displayMinutes + (displaySeconds / 60) + "rem";
-        //progressNegativeEle.style.width = percentLeft + "%";
-    }
-}
-
-function backgroundPhase() {
-    timerPositive ? containerEle.classList.add("bg-positive") : containerEle.classList.add("bg-negative");
-    timerPositive ? containerEle.classList.remove("bg-negative") : containerEle.classList.remove("bg-positive");
-}
 
 if('IntersectionObserver' in window){
     var observer = new IntersectionObserver((changes) => {
