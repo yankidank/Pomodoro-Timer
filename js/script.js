@@ -37,7 +37,8 @@ function setNewTime(m, s) {
     timerPause = true;
     if (setMarker !== lastMarker){
         if (displaySeconds !== 0){
-            timerPositive ? setTimePositive = setMarker : setTimeNegative = setMarker;
+            // timerPositive ? setTimePositive = parseInt(setMarker) : setTimeNegative = parseInt(setMarker);
+            // console.log(setTimePositive, setTimeNegative, displayMinutes)
         }
     }
     displayMinutes = parseInt(m);
@@ -61,10 +62,10 @@ function trackTimeline(){
     var mainWrapper = document.getElementById("main-wrapper").getBoundingClientRect();
     var timelineBox = timelineWrapperEle.getBoundingClientRect();
     var intElemOffsetWidth = progressPositiveEle.offsetWidth;
-    console.log(progressBox)
-    console.log(mainWrapper)
-    console.log(timelineBox)
-    console.log(intElemOffsetWidth)
+    // console.log(progressBox)
+    // console.log(mainWrapper)
+    // console.log(timelineBox)
+    // console.log(intElemOffsetWidth)
     // if (progressBox.width > 0){
     //     ioPaused = true;
     //     timelineWrapperEle.scroll({
@@ -84,10 +85,10 @@ function switchPhase() {
     clearInterval(int);
     timerPositive = !timerPositive;
     var currentPhase = timerPositive ? 'pos' : 'neg';
-    displayMinutes = parseInt(setTimeNegative);
+    displayMinutes = parseInt(timerPositive ? setTimePositive : setTimeNegative);
     displaySeconds = 0;
     timerPause = true;
-    setMarker = parseInt(setTimeNegative);
+    setMarker = displayMinutes;
     buttonStartEle.style.display = 'inline-block';
     buttonStopEle.style.display = 'none';
     if (timerPositive){
@@ -207,6 +208,11 @@ buttonStartEle.onclick = function(e) {
     }
     buttonStartEle.style.display = 'none';
     buttonStopEle.style.display = 'inline-block';
+    if (displayMinutes === 0 && displaySeconds === 0){
+        // timerPositive ? setTimePositive = parseInt(setMarker) : setTimeNegative = parseInt(setMarker);
+    } else {
+        timerPositive ? setTimePositive = parseInt(setMarker) || 1: setTimeNegative = parseInt(setMarker) || 1;
+    }
     startTimer();
 };
 
@@ -222,7 +228,7 @@ if('IntersectionObserver' in window){
     var observer = new IntersectionObserver((changes) => {
         changes.forEach(entry => {
             if (!ioPaused){
-                setMarker = entry.target.dataset.marker;
+                setMarker = parseInt(entry.target.dataset.marker);
                 if(entry.intersectionRatio === 0 && lastMarker !== setMarker){
                     entry.target.dataset.phase === 'pos' ? timerPositive = true : timerPositive = false;
                     backgroundPhase();
@@ -272,6 +278,9 @@ timelineWrapperEle.addEventListener('mousemove', (e) => {
     var walk = (x - startX) * 1.5; //scroll-fast
     timelineWrapperEle.scrollLeft = scrollLeft - walk;
 });
+// timelineWrapperEle.addEventListener('scroll', (e) => {
+//    
+// });
 
 var timelineLengthAdjusted = timelineLength - 0.46;
 document.getElementById("progress-bar-positive-bg").style.width = timelineLengthAdjusted+"rem";
