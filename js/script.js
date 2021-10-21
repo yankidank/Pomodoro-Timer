@@ -99,8 +99,10 @@ function switchPhase() {
     }
     var renderId = currentPhase+"-"+timeString(displayMinutes);
     timeEle.innerHTML = timerPositive ? timeString(displayMinutes) + `<span class="seconds secs-pos">:00</span>` : timeString(displayMinutes) + `<span class="seconds secs-neg">:00</span>`;
-    ioPaused = true;
-    document.getElementById("marker-id-"+renderId).scrollIntoView({behavior: "smooth", block: "center", inline: "center"})
+    setTimeout(() => {
+        ioPaused = true;
+        document.getElementById("marker-id-"+renderId).scrollIntoView({behavior: "smooth", block: "center", inline: "center"})
+    }, 50);
     ioPaused = false;
 }
 
@@ -147,6 +149,8 @@ function startTimer() {
     buttonStartEle.style.display = 'none';
     buttonStopEle.style.display = 'inline-block';
     timerPause = false;
+    ioPaused = false;
+    timerRunning = true;
     dateStart = Date.now();
     var secsTotal = (displayMinutes * 60) + displaySeconds;
     var secs,
@@ -203,9 +207,9 @@ function startTimer() {
 
 buttonStartEle.onclick = function(e) {
     e.preventDefault();
+    ioPaused = false;
     if (!timerPause){
         timerPause = true;
-        return;
     }
     if (displayMinutes === 0 && displaySeconds === 0){
         // timerPositive ? setTimePositive = parseInt(setMarker) : setTimeNegative = parseInt(setMarker);
@@ -239,8 +243,8 @@ if('IntersectionObserver' in window){
                 buttonStartEle.style.display = 'inline-block';
                 buttonStopEle.style.display = 'none';
             } else {
-                buttonStartEle.style.display = 'none';
-                buttonStopEle.style.display = 'inline-block';
+                // buttonStartEle.style.display = 'none';
+                // buttonStopEle.style.display = 'inline-block';
                 timerRunning = true;
                 timerPause = false;
             }

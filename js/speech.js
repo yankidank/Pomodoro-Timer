@@ -31,10 +31,13 @@ function isNumeric(str) {
 }
 
 recognition.onresult = function(event) {
+    clearInterval(int);
+    timerPause = true;
+    buttonStopEle.style.display = 'none';
+    buttonStartEle.style.display = 'inline-block';
     var number = event.results[0][0].transcript;
-    console.log('Input: ' + number + '.');
+    console.log('Transcript: ' + number + '.');
     console.log('Confidence: ' + event.results[0][0].confidence);
-
     var stringNums = number.replaceAll('one', 1)
         .replaceAll('two', 2)
         .replaceAll('three', 3)
@@ -52,14 +55,20 @@ recognition.onresult = function(event) {
         .replaceAll('half', 30);
     var numberMatches = stringNums.match(/\d+/g) || undefined;
     if (numberMatches !== undefined && numberMatches.length > 0){
-        buttonStartEle.style.display = 'inline-block';
-        buttonStopEle.style.display = 'none';
         if (isNumeric(number)){
-            if (numberMatches[0] > 12){
+            if (numberMatches[0] > 99){
+                // 1430
                 var splitMatches = numberMatches[0].split('');
-                var shiftMatches = splitMatches
+                console.log(splitMatches)
+                if (splitMatches.length > 3){
+                    var shiftMatches = splitMatches
+                    setNewTime(splitMatches[0]+splitMatches[1], splitMatches[2] + splitMatches[3]);
+                    console.log(splitMatches[0]+splitMatches[1], splitMatches[2] + splitMatches[3])
+                } else {
+                    var shiftMatches = splitMatches
                     shiftMatches = shiftMatches.shift();
-                setNewTime(shiftMatches, splitMatches[0]+splitMatches[1] || 0);
+                    setNewTime(shiftMatches, splitMatches[0]+splitMatches[1] || 0);
+                }
             } else {
                 setNewTime(numberMatches[0], numberMatches[1] || 0);
             }
@@ -73,18 +82,27 @@ recognition.onresult = function(event) {
     }
     var currentPhase = timerPositive ? 'pos' : 'neg';
     var renderId = currentPhase+"-"+timeString(displayMinutes);
-    ioPaused = true;
-    //document.getElementById("marker-id-"+renderId).scrollIntoView({behavior: "smooth", block: "center", inline: "center"})
-    ioPaused = false;
-    if (number.includes('start')){
-        startTimer();
-    }
-    if (number.includes('stop')){
+    setTimeout(() => {
+        ioPaused = true;
+        document.getElementById("marker-id-"+renderId).scrollIntoView({behavior: "smooth", block: "center", inline: "center"});
+    }, 50);
+    ioPaused = false;     
+    // if (number.includes('start')){
+    //     ioPaused = false;
+    //     timerRunning = true;
+    //     timerPause = false;
+    //     buttonStartEle.style.display = 'none';
+    //     buttonStopEle.style.display = 'inline-block';
+    //     startTimer();
+    // }
+    if (number.includes('stop') || number.includes('pause')){
         clearInterval(int);
+        ioPaused = false;
         timerPause = true;
+        timerRunning = false;
         if (displayMinutes === 0 && displaySeconds === 0){ return } // already at 00:00
-        buttonStopEle.style.display = 'none'
-        buttonStartEle.style.display = 'inline-block'
+        buttonStopEle.style.display = 'none';
+        buttonStartEle.style.display = 'inline-block';
     }
 }
 
