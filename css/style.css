@@ -167,3 +167,14 @@ main {
 .btn.negative {
     color:red;
 }
+.microphone {
+    align-self: center;
+    margin-top: 30px;
+    border: 2px solid #fff;
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 30px;
+}
+.microphone:hover, .microphone:active {
+    cursor: pointer;
+}
