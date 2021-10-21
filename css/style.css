@@ -170,8 +170,9 @@ main {
     color:red;
 }
 .microphone {
+    box-shadow: 0px 0px 4px rgb(0 0 0 / 50%);
     align-self: center;
-    margin-top: 25px;
+    margin:25px 0;
     border: 2px solid #fff;
     display: inline-block;
     padding: 8px 16px;
@@ -179,4 +180,9 @@ main {
 }
 .microphone:hover, .microphone:active {
     cursor: pointer;
+}
+.microphone:active {
+    transform: scale(0.95);
+    border-color:rgba(255, 255, 255, 0.75);
+    box-shadow: 0px 0px 2px rgb(0 0 0 / 40%);
 }
