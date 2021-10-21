@@ -111,7 +111,7 @@ recognition.onspeechend = function() {
 }
 
 recognition.onnomatch = function(event) {
-    console.log("I didn't recognise that number.");
+    console.log("I didn't recognize a number.");
 }
 
 recognition.onerror = function(event) {
