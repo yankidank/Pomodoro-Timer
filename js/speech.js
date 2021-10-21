@@ -1,14 +1,11 @@
 var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
 var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList
 var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
-
-var numbers = [];
+var numbers = ['minutes','seconds','half'];
 for (let index = 0; index < 60; index++) {
-    numbers.push(toString(index));
+    numbers.push(index.toString());
 }
-console.log(numbers)
 var grammar = '#JSGF V1.0; grammar numbers; public <number> = ' + numbers.join(' | ') + ' ;'
-
 var recognition = new SpeechRecognition();
 var speechRecognitionList = new SpeechGrammarList();
 speechRecognitionList.addFromString(grammar, 1);
@@ -25,7 +22,7 @@ microphone.innerHTML = svgMicrophone;
 
 microphone.onclick = function() {
     recognition.start();
-    console.log('Listening for a number.');
+    console.log('Listening...');
 }
 
 function isNumeric(str) {
@@ -38,37 +35,57 @@ recognition.onresult = function(event) {
     console.log('Input: ' + number + '.');
     console.log('Confidence: ' + event.results[0][0].confidence);
 
-    if (number.includes(':')){
-        var dividedTime = number.split(':')
-        setNewTime(dividedTime[0], dividedTime[1]);
-        console.log(dividedTime[0], dividedTime[1]);
-    } else if (number.includes('seconds')){
-        var dividedTime = number.split('minutes')
-        var dividedSeconds = dividedTime.split('seconds');
-        setNewTime(dividedTime[0], dividedSeconds[0]);
-    } else if (number.includes('minutes')){ 
-        var dividedTime = number.split('minutes')
-        setNewTime(dividedTime[0], dividedTime[1] || 0);
-    } else if (isNumeric(number)){
-        var numberSplit = number.split('');
-        if (numberSplit.length > 2){
-            if (numberSplit[0] === '1'){
-                setNewTime(numberSplit[0] + numberSplit[1], numberSplit[2]);
+    var stringNums = number.replaceAll('one', 1)
+        .replaceAll('two', 2)
+        .replaceAll('three', 3)
+        .replaceAll('four', 4)
+        .replaceAll('five', 5)
+        .replaceAll('six', 6)
+        .replaceAll('seven', 7)
+        .replaceAll('eight', 8)
+        .replaceAll('nine', 9)
+        .replaceAll('ten', 10)
+        .replaceAll('eleven', 11)
+        .replaceAll('twelve', 12)
+        .replaceAll('-and-a-', ' ')
+        .replaceAll('1/2', 30)
+        .replaceAll('half', 30);
+    var numberMatches = stringNums.match(/\d+/g) || undefined;
+    if (numberMatches !== undefined && numberMatches.length > 0){
+        buttonStartEle.style.display = 'inline-block';
+        buttonStopEle.style.display = 'none';
+        if (isNumeric(number)){
+            if (numberMatches[0] > 12){
+                var splitMatches = numberMatches[0].split('');
+                var shiftMatches = splitMatches
+                    shiftMatches = shiftMatches.shift();
+                setNewTime(shiftMatches, splitMatches[0]+splitMatches[1] || 0);
             } else {
-                setNewTime(numberSplit[0], numberSplit[1] + numberSplit[2] );
+                setNewTime(numberMatches[0], numberMatches[1] || 0);
             }
+        } else if (number.includes('half')){
+            setNewTime(numberMatches[0], 30);
+        } else if (numberMatches.length === 1){
+            setNewTime(parseInt(numberMatches[0] || 1), 0);
         } else {
-            setNewTime(number, 0);
+            setNewTime(parseInt(numberMatches[0] || 1), parseInt(numberMatches[1]) || 0);
         }
-    } else {
-        setNewTime(number, 0);
     }
-
     var currentPhase = timerPositive ? 'pos' : 'neg';
     var renderId = currentPhase+"-"+timeString(displayMinutes);
     ioPaused = true;
-    document.getElementById("marker-id-"+renderId).scrollIntoView({behavior: "smooth", block: "center", inline: "center"})
+    //document.getElementById("marker-id-"+renderId).scrollIntoView({behavior: "smooth", block: "center", inline: "center"})
     ioPaused = false;
+    if (number.includes('start')){
+        startTimer();
+    }
+    if (number.includes('stop')){
+        clearInterval(int);
+        timerPause = true;
+        if (displayMinutes === 0 && displaySeconds === 0){ return } // already at 00:00
+        buttonStopEle.style.display = 'none'
+        buttonStartEle.style.display = 'inline-block'
+    }
 }
 
 recognition.onspeechend = function() {

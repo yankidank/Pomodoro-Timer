@@ -7,7 +7,6 @@ var progressPositiveEle = document.getElementById("progress-positive");
 var progressNegativeEle = document.getElementById("progress-negative");
 var buttonStartEle = document.getElementById("start");
 var buttonStopEle = document.getElementById("stop");
-var buttonResetEle = document.getElementById("reset");
 var timelineLength = 120;
 var setTimePositive = 25;
 var setTimeNegative = 5;
@@ -145,6 +144,8 @@ document.getElementById('marker-wrapper-negative').innerHTML = markerDataNeg;
 // Run timer countdown
 function startTimer() {
     clearInterval(int);
+    buttonStartEle.style.display = 'none';
+    buttonStopEle.style.display = 'inline-block';
     timerPause = false;
     dateStart = Date.now();
     var secsTotal = (displayMinutes * 60) + displaySeconds;
@@ -206,8 +207,6 @@ buttonStartEle.onclick = function(e) {
         timerPause = true;
         return;
     }
-    buttonStartEle.style.display = 'none';
-    buttonStopEle.style.display = 'inline-block';
     if (displayMinutes === 0 && displaySeconds === 0){
         // timerPositive ? setTimePositive = parseInt(setMarker) : setTimeNegative = parseInt(setMarker);
     } else {
