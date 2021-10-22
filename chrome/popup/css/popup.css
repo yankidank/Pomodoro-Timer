@@ -1,0 +1,20 @@
+html, body {
+    width: 22rem !important;
+}
+#main-wrapper {
+    height: 28rem !important;
+    width: 22rem !important;
+}
+#container {
+    border: 1px solid rgba(255, 255, 255, 1);
+    border-radius: 2px;
+}
+.btn { 
+    width: 220px;
+    height: 60px;
+    font-size: 1.3rem;
+}
+.microphone img {
+    width: 1.75rem;
+    height: 1.75rem;
+}
